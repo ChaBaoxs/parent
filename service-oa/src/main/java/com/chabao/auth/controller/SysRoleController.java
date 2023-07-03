@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.chabao.auth.service.SysRoleService;
+import com.chabao.common.config.exception.ChaBaoException;
 import com.chabao.model.system.SysRole;
 import com.chabao.result.Result;
 import com.chabao.vo.system.SysRoleQueryVo;
@@ -28,6 +29,11 @@ public class SysRoleController {
     @GetMapping("/findAll")
     public Result findAll(){
         List<SysRole> list = sysRoleService.list();
+//        try {
+//            int i = 10/0;
+//        }catch (Exception e){
+//            throw new ChaBaoException(33,"自定义异常");
+//        }
         return Result.success(list);
     }
 
