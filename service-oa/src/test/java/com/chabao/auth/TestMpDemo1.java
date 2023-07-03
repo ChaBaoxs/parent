@@ -21,4 +21,16 @@ public class TestMpDemo1 {
         System.out.println(sysRoles);
     }
 
+    @Test
+    public void deleteId(){
+        int sysRoles = mapper.deleteById(1);
+        System.out.println(sysRoles);
+    }
+
+//    SysRole sysRole = new SysRole("2","2","2");
+//    @Test
+//    public void add(){
+//        int insert = mapper.insert(sysRole);
+//        System.out.println(insert);
+//    }
 }
