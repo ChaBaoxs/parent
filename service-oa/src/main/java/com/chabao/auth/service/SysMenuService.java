@@ -3,6 +3,7 @@ package com.chabao.auth.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.chabao.model.system.SysMenu;
 import com.chabao.vo.system.AssginMenuVo;
+import com.chabao.vo.system.RouterVo;
 
 import java.util.List;
 
@@ -23,4 +24,8 @@ public interface SysMenuService extends IService<SysMenu> {
     List<SysMenu> findNodes();
 
     void removeMenuById(Long id);
+
+    List<RouterVo> findUserMenuListByUserId(Long userId);
+
+    List<String> findUserPermsByUserId(Long userId);
 }
