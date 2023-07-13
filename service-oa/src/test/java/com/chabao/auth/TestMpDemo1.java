@@ -4,7 +4,9 @@ import com.chabao.auth.mapper.SysRoleMapper;
 import com.chabao.model.system.SysRole;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.RedisTemplate;
 
 import java.util.List;
 
@@ -33,4 +35,16 @@ public class TestMpDemo1 {
 //        int insert = mapper.insert(sysRole);
 //        System.out.println(insert);
 //    }
+
+    @Autowired
+    private RedisTemplate redisTemplate;
+
+    @Test
+    void contextLoads(){
+        System.out.println("获取Redis中所有的key:");
+        redisTemplate.keys("*").forEach((key)->{
+            System.out.println(key);
+        });
+
+    }
 }

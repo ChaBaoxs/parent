@@ -1,10 +1,14 @@
 package com.chabao.security.filter;
 
+import com.alibaba.fastjson.JSON;
 import com.chabao.jwt.JwtHelper;
 import com.chabao.result.ResponseUtil;
 import com.chabao.result.Result;
 import com.chabao.result.ResultCodeEnum;
+import com.chabao.security.custom.LoginUserInfoHelper;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -14,15 +18,17 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
-//    private RedisTemplate redisTemplate;
+    private RedisTemplate redisTemplate;
 
-//    public TokenAuthenticationFilter(RedisTemplate redisTemplate) {
-//        this.redisTemplate = redisTemplate;
-//    }
+    public TokenAuthenticationFilter(RedisTemplate redisTemplate) {
+        this.redisTemplate = redisTemplate;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -49,26 +55,25 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         if(!StringUtils.isEmpty(token)) {
             String username = JwtHelper.getUsername(token);
             if(!StringUtils.isEmpty(username)) {
-//                //当前用户信息放到ThreadLocal里面
-//                LoginUserInfoHelper.setUserId(JwtHelper.getUserId(token));
-//                LoginUserInfoHelper.setUsername(username);
-//
-//                //通过username从redis获取权限数据
-//                String authString = (String)redisTemplate.opsForValue().get(username);
-//                //把redis获取字符串权限数据转换要求集合类型 List<SimpleGrantedAuthority>
-//                if(!StringUtils.isEmpty(authString)) {
-//                    List<Map> maplist = JSON.parseArray(authString, Map.class);
-//                    System.out.println(maplist);
-//                    List<SimpleGrantedAuthority> authList = new ArrayList<>();
-//                    for (Map map:maplist) {
-//                        String authority = (String)map.get("authority");
-//                        authList.add(new SimpleGrantedAuthority(authority));
-//                    }
-//                    return new UsernamePasswordAuthenticationToken(username,null, authList);
-//                } else {
-//                    return new UsernamePasswordAuthenticationToken(username,null, new ArrayList<>());
-//                }
-                return new UsernamePasswordAuthenticationToken(username,null, Collections.emptyList());
+                //当前用户信息放到ThreadLocal里面
+                LoginUserInfoHelper.setUserId(JwtHelper.getUserId(token));
+                LoginUserInfoHelper.setUsername(username);
+
+                //通过username从redis获取权限数据
+                String authString = (String)redisTemplate.opsForValue().get(username);
+                //把redis获取字符串权限数据转换要求集合类型 List<SimpleGrantedAuthority>
+                if(!StringUtils.isEmpty(authString)) {
+                    List<Map> maplist = JSON.parseArray(authString, Map.class);
+                    System.out.println(maplist);
+                    List<SimpleGrantedAuthority> authList = new ArrayList<>();
+                    for (Map map:maplist) {
+                        String authority = (String)map.get("authority");
+                        authList.add(new SimpleGrantedAuthority(authority));
+                    }
+                    return new UsernamePasswordAuthenticationToken(username,null, authList);
+                } else {
+                    return new UsernamePasswordAuthenticationToken(username,null, new ArrayList<>());
+                }
             }
         }
         return null;
