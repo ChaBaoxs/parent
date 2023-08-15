@@ -1,11 +1,11 @@
-package com.chabao.auth;
+package com.chabao;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@ComponentScan("com.chabao")
+//@ComponentScan("com.chabao")
 public class ServiceAuthApplication {
 
     public static void main(String[] args) {
